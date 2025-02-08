@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
-import 'watch_movies_options_page.dart'; // Import the new page
+import 'movie_search_page.dart';
 
-class WhatToWatchPage extends StatelessWidget {
+class WatchOptionsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('What to Watch'),
+        title: Text('Watch Options'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _buildOptionButton(context, 'Movies', true, () {
+            _buildOptionButton(context, 'Watch at Home', true, () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => WatchOptionsPage()), // Redirect to WatchOptionsPage
+                MaterialPageRoute(builder: (context) => MovieSearchPage()),
               );
             }),
-            _buildOptionButton(context, 'TV Shows', false, null),
-            _buildOptionButton(context, 'Animes', false, null),
+            _buildOptionButton(context, 'Watch at Nearby Cinemas', false, null),
+            _buildOptionButton(context, 'Choose for Me', false, null),
           ],
         ),
       ),
