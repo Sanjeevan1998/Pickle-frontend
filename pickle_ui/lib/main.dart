@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'what_to_watch_page.dart';
 import 'eating_options_page.dart'; // Add this import
+import 'travel_suggestion_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -43,7 +44,12 @@ class HomePage extends StatelessWidget {
               );
             }),
             _buildOptionButton(context, 'Help me choose what to read', false, null),
-            _buildOptionButton(context, 'Help me choose where to go', false, null),
+            _buildOptionButton(context, 'Help me choose where to go', true, () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const TravelSuggestionPage()),
+              );
+            }),
             _buildOptionButton(context, 'Help me choose what to do next', false, null),
           ],
         ),
