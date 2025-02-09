@@ -336,7 +336,15 @@ class _TaskInputPageState extends State<TaskInputPage> {
       'physicalActivities': _physicalActivities,
     };
 
-    Navigator.push(context, MaterialPageRoute(builder: (_) => LoadingScreen()));
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LoadingScreen(
+          message: 'Creating schedule for tasks to do',
+          subMessage: 'Optimizing your task schedule...',
+        ),
+      ),
+    );
     
     try {
       final response = await http.post(
