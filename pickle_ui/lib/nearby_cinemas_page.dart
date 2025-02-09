@@ -18,6 +18,7 @@ class _NearbyCinemasPageState extends State<NearbyCinemasPage> {
   bool _letUsChooseDate = false;
   String? _source;
   DateTime? _selectedDate;
+  bool _isTopSectionVisible = true;
 
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
@@ -26,8 +27,7 @@ class _NearbyCinemasPageState extends State<NearbyCinemasPage> {
     final today = DateTime.now();
     final daysUntilNextSunday = DateTime.sunday - today.weekday;
     final nextSunday = today.add(Duration(days: daysUntilNextSunday));
-    final nextToNextSunday = nextSunday.add(Duration(days: 7));
-    return nextToNextSunday;
+    return nextSunday.add(Duration(days: 7));
   }
 
   bool _isValidPincode(String pincode) {
@@ -184,8 +184,9 @@ class _NearbyCinemasPageState extends State<NearbyCinemasPage> {
 
     setState(() {
       _isLoading = true;
-      _cinemas = null; // Reset cinemas data
-      _source = null; // Reset source
+      _cinemas = null;
+      _source = null;
+      _isTopSectionVisible = false;
     });
 
     final selectedDate = _letUsChooseDate
@@ -193,7 +194,7 @@ class _NearbyCinemasPageState extends State<NearbyCinemasPage> {
         : _selectedDates.first;
 
     setState(() {
-      _selectedDate = selectedDate; // Store the selected date
+      _selectedDate = selectedDate;
     });
 
     final date = DateFormat('yyyy-MM-dd').format(selectedDate);
@@ -234,9 +235,8 @@ class _NearbyCinemasPageState extends State<NearbyCinemasPage> {
   }
 
   String _formatSelectedDate(DateTime date) {
-    final day = DateFormat('EEEE').format(date); // Full day name (e.g., Saturday)
-    final dateSuffix = _getDateSuffix(date.day); // Date suffix (e.g., 12th)
-
+    final day = DateFormat('EEEE').format(date);
+    final dateSuffix = _getDateSuffix(date.day);
     return 'Shows near you on $day, ${date.day}$dateSuffix';
   }
 
@@ -261,67 +261,91 @@ class _NearbyCinemasPageState extends State<NearbyCinemasPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Nearby Cinemas'),
+        actions: [
+          IconButton(
+            icon: Icon(_isTopSectionVisible ? Icons.expand_less : Icons.expand_more),
+            onPressed: () {
+              setState(() {
+                _isTopSectionVisible = !_isTopSectionVisible;
+              });
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            TextField(
-              controller: _pincodeController,
-              decoration: InputDecoration(
-                labelText: 'Enter US Pincode',
-                border: OutlineInputBorder(),
-              ),
-              keyboardType: TextInputType.number,
-            ),
-            SizedBox(height: 20),
-            Container(
-              padding: EdgeInsets.all(16.0),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.circular(8.0),
-              ),
+            Visibility(
+              visible: _isTopSectionVisible,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Select Dates',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  TextField(
+                    controller: _pincodeController,
+                    decoration: InputDecoration(
+                      labelText: 'Enter US Pincode',
+                      border: OutlineInputBorder(),
+                    ),
+                    keyboardType: TextInputType.number,
                   ),
-                  SizedBox(height: 10),
-                  Text(
-                    'Tap below to choose dates. Today\'s date is highlighted in light blue.',
-                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                  SizedBox(height: 20),
+                  Container(
+                    padding: EdgeInsets.all(16.0),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Select Dates',
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          'Tap below to choose dates. Today\'s date is highlighted in light blue.',
+                          style: TextStyle(fontSize: 14, color: Colors.grey),
+                        ),
+                        SizedBox(height: 10),
+                        ElevatedButton(
+                          onPressed: () => _showCalendarPopup(context),
+                          child: Text('Open Calendar'),
+                        ),
+                        if (_selectedDates.isNotEmpty) ...[
+                          SizedBox(height: 10),
+                          Text(
+                            'Selected Dates:',
+                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                          ),
+                          Wrap(
+                            spacing: 8.0,
+                            children: _selectedDates.map((date) {
+                              return Chip(
+                                label: Text(DateFormat('yyyy-MM-dd').format(date)),
+                                onDeleted: () {
+                                  setState(() {
+                                    _selectedDates.remove(date);
+                                  });
+                                },
+                              );
+                            }).toList(),
+                          ),
+                        ],
+                      ],
+                    ),
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: () => _showCalendarPopup(context),
-                    child: Text('Open Calendar'),
+                    onPressed: _searchCinemas,
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: Size(double.infinity, 50),
+                    ),
+                    child: Text('Search Cinemas'),
                   ),
-                  if (_selectedDates.isNotEmpty) ...[
-                    SizedBox(height: 10),
-                    Text(
-                      'Selected Dates:',
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                    ),
-                    Wrap(
-                      spacing: 8.0,
-                      children: _selectedDates.map((date) {
-                        return Chip(
-                          label: Text(DateFormat('yyyy-MM-dd').format(date)),
-                          onDeleted: () {
-                            setState(() {
-                              _selectedDates.remove(date);
-                            });
-                          },
-                        );
-                      }).toList(),
-                    ),
-                  ],
                 ],
               ),
             ),
-            SizedBox(height: 20),
             if (_isLoading) ...[
               SizedBox(
                 height: 50,
@@ -332,17 +356,6 @@ class _NearbyCinemasPageState extends State<NearbyCinemasPage> {
                   ),
                 ),
               ),
-            ] else ...[
-              ElevatedButton(
-                onPressed: _searchCinemas,
-                style: ElevatedButton.styleFrom(
-                  minimumSize: Size(double.infinity, 50),
-                ),
-                child: Text('Search Cinemas'),
-              ),
-            ],
-            SizedBox(height: 20),
-            if (_isLoading) ...[
               Text(
                 _letUsChooseDate
                     ? 'Fetching movies scheduled for ${DateFormat('EEEE, MMMM d, y').format(_selectedDates[DateTime.now().millisecondsSinceEpoch % _selectedDates.length])}...'
