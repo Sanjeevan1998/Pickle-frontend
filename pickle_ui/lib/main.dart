@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'what_to_watch_page.dart';
+import 'eating_options_page.dart'; // Add this import
 
 void main() {
   runApp(MyApp());
@@ -35,7 +36,12 @@ class HomePage extends StatelessWidget {
                 MaterialPageRoute(builder: (context) => WhatToWatchPage()),
               );
             }),
-            _buildOptionButton(context, 'Help me choose what to eat', false, null),
+            _buildOptionButton(context, 'Help me choose what to eat', true, () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => WhatToEatPage()),
+              );
+            }),
             _buildOptionButton(context, 'Help me choose what to read', false, null),
             _buildOptionButton(context, 'Help me choose where to go', false, null),
             _buildOptionButton(context, 'Help me choose what to do next', false, null),
