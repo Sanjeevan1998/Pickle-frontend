@@ -1,20 +1,46 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
-
+import 'cook_at_home_page.dart';
+import 'restaurant_search_page.dart';
 
 class WhatToEatPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('What to Eat?'),
+        title: Text('Eating Options'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _buildOptionButton(context, 'Cook at home', false, null),
-            _buildOptionButton(context, 'Eat outside', false, null),
-            _buildOptionButton(context, 'Choose for me', false, null),
+            _buildOptionButton(context, 'Cook at Home', true, () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CookAtHomePage()),
+              );
+            }),
+            _buildOptionButton(context, 'Eat Outside', true, () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => RestaurantSearchPage()),
+              );
+            }),
+            _buildOptionButton(context, 'Decide for Me', true, () {
+              final random = Random();
+              final randomChoice = random.nextBool();
+              if (randomChoice) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CookAtHomePage()),
+                );
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => RestaurantSearchPage()),
+                );
+              }
+            }),
           ],
         ),
       ),

@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'loading_screen.dart';
+import 'schedule_result_page.dart';
 
 class TaskInputPage extends StatefulWidget {
   final List<dynamic> calendarEvents;
@@ -325,31 +329,53 @@ class _TaskInputPageState extends State<TaskInputPage> {
     );
   }
 
-  void _submitData() {
+  void _submitData() async {
     final payload = {
       'calendarEvents': widget.calendarEvents,
       'tasks': _tasks,
       'physicalActivities': _physicalActivities,
     };
 
-    // TODO: Call DeepSeek API with the payload
-    print(payload); // For debugging
+    Navigator.push(context, MaterialPageRoute(builder: (_) => LoadingScreen()));
+    
+    try {
+      final response = await http.post(
+        Uri.parse('http://127.0.0.1:5000/api/createScheduleUsingDeepseek'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(payload),
+      );
 
-    // Handle error for now
+      Navigator.pop(context); // Remove loading screen
+
+      if (response.statusCode == 200) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ScheduleResultPage(scheduleText: response.body),
+          ),
+        );
+      } else {
+        _showErrorDialog('API Error: ${response.statusCode}');
+      }
+    } catch (e) {
+      Navigator.pop(context);
+      _showErrorDialog('Connection Error: $e');
+    }
+  }
+
+  void _showErrorDialog(String message) {
     showDialog(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Schedule Generated'),
-          content: const Text('Your schedule has been generated successfully!'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
+      builder: (context) => AlertDialog(
+        title: const Text('Error'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
     );
   }
 
