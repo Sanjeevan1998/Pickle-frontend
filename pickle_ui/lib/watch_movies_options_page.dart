@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'movie_search_page.dart';
+import 'nearby_cinemas_page.dart'; 
 
 class WatchOptionsPage extends StatelessWidget {
   @override
@@ -18,8 +19,22 @@ class WatchOptionsPage extends StatelessWidget {
                 MaterialPageRoute(builder: (context) => MovieSearchPage()),
               );
             }),
-            _buildOptionButton(context, 'Watch at Nearby Cinemas', false, null),
-            _buildOptionButton(context, 'Choose for Me', false, null),
+            _buildOptionButton(context, 'Watch at Nearby Cinemas', true, () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => NearbyCinemasPage()),
+              );
+            }),
+            _buildOptionButton(context, 'Choose for Me', true, () {
+              // Randomly choose between Watch at Home and Nearby Cinemas
+              final randomChoice = (DateTime.now().second % 2 == 0)
+                  ? MovieSearchPage()
+                  : NearbyCinemasPage();
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => randomChoice),
+              );
+            }),
           ],
         ),
       ),

@@ -45,7 +45,7 @@ class _MovieSearchPageState extends State<MovieSearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Movie Search'),
+        title: Text('Watch at Home'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
