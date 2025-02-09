@@ -55,6 +55,17 @@ class WhatToEatPage extends StatelessWidget {
         child: Text(text),
         style: ElevatedButton.styleFrom(
           minimumSize: Size(200, 50),
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          textStyle: TextStyle(
+            fontFamily: 'Roboto',
+            fontWeight: FontWeight.bold,
+            fontSize: 16
+          ),
+          side: BorderSide(color: Colors.black),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8)
+          ),
         ),
       ),
     );

@@ -19,13 +19,15 @@ class _WhatToDoNextPageState extends State<WhatToDoNextPage> {
       setState(() {
         _isAppleCalendarConnected = true;
         _calendarStatus = 'Connected to Apple Calendar';
-        _calendarEvents = events; // Store the events
+        _calendarEvents = events;
       });
-      // Navigate directly to TaskInputPage
-      Navigator.push(
+      // Immediate transition without animation
+      Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (context) => TaskInputPage(calendarEvents: _calendarEvents),
+        PageRouteBuilder(
+          pageBuilder: (context, animation1, animation2) => TaskInputPage(calendarEvents: _calendarEvents),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
         ),
       );
     } catch (e) {
@@ -60,13 +62,38 @@ class _WhatToDoNextPageState extends State<WhatToDoNextPage> {
               ElevatedButton(
                 onPressed: _connectToAppleCalendar,
                 child: Text('Connect to Apple Calendar'),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(200, 50),
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black,
+                  textStyle: TextStyle(
+                    fontFamily: 'Roboto',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16
+                  ),
+                  side: BorderSide(color: Colors.black),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8)
+                  ),
+                ),
               ),
               SizedBox(height: 10),
               ElevatedButton(
                 onPressed: null,
                 child: Text('Connect to Google Calendar'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey,
+                  minimumSize: Size(200, 50),
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black.withOpacity(0.5),
+                  textStyle: TextStyle(
+                    fontFamily: 'Roboto',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16
+                  ),
+                  side: BorderSide(color: Colors.grey),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8)
+                  ),
                 ),
               ),
             ] else ...[

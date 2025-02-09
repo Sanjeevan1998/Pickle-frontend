@@ -96,7 +96,7 @@ class _RestaurantSearchPageState extends State<RestaurantSearchPage> {
                 onPressed: _searchRestaurants,
                 child: Text('Search Restaurants'),
                 style: ElevatedButton.styleFrom(
-                  minimumSize: Size(double.infinity, 50),
+                  minimumSize: Size(200, 50),
                   backgroundColor: Colors.white,
                   foregroundColor: Colors.black,
                   textStyle: TextStyle(
