@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'what_to_watch_page.dart';
 import 'eating_options_page.dart'; // Add this import
 import 'travel_suggestion_page.dart';
+import 'what_to_do_next_page.dart'; // Import the new page
 
 void main() {
   runApp(MyApp());
@@ -50,7 +51,12 @@ class HomePage extends StatelessWidget {
                 MaterialPageRoute(builder: (context) => const TravelSuggestionPage()),
               );
             }),
-            _buildOptionButton(context, 'Help me choose what to do next', false, null),
+            _buildOptionButton(context, 'Help me choose what to do next', true, () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => WhatToDoNextPage()),
+              );
+            }),
           ],
         ),
       ),
